@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './SearchBar.module.css';
 
 const sortByOptions = {
@@ -8,11 +8,44 @@ const sortByOptions = {
 };
 
 const SearchBar = () => {
+  const [sortBy, setSortBy] = useState('best_match');
+  const [businessName, setBusinessName] = useState('');
+  const [location, setLocation] = useState('');
+
+  const getSortByClass = (sortByOption) => {
+    return sortBy === sortByOption ? styles.active : '';
+  };
+
+  const handleSortByChange = (sortByOption) => {
+    setSortBy(sortByOption);
+  };
+
+  const handleBusinessNameChange = (event) => {
+    setBusinessName(event.target.value);
+  };
+
+  const handleLocationChange = (event) => {
+    setLocation(event.target.value);
+  };
+
   const renderSortByOptions = () => {
     return Object.keys(sortByOptions).map((sortByOption) => {
       let sortByOptionValue = sortByOptions[sortByOption];
-      return <li key={sortByOptionValue}>{sortByOption}</li>;
+      return (
+        <li
+          key={sortByOptionValue}
+          className={getSortByClass(sortByOptionValue)}
+          onClick={() => handleSortByChange(sortByOptionValue)}
+        >
+          {sortByOption}
+        </li>
+      );
     });
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    console.log(`Searching Yelp with ${businessName}, ${location}, ${sortBy}`);
   };
 
   return (
@@ -21,11 +54,19 @@ const SearchBar = () => {
         <ul>{renderSortByOptions()}</ul>
       </div>
       <div className={styles.SearchBarFields}>
-        <input placeholder='Search Businesses' />
-        <input placeholder='Where?' />
+        <input
+          placeholder="Search Businesses"
+          value={businessName}
+          onChange={handleBusinessNameChange}
+        />
+        <input
+          placeholder="Where?"
+          value={location}
+          onChange={handleLocationChange}
+        />
       </div>
       <div className={styles.SearchBarSubmit}>
-        <a>Let's Go</a>
+        <a href="#" onClick={handleSearch}>Let's Go</a>
       </div>
     </div>
   );
